@@ -1,6 +1,20 @@
 #!/bin/bash
 INFLUX_ENABLED=`cat /etc/inverter/mqtt.json | jq '.influx.enabled' -r`
 
+pushTest () {
+    MQTT_SERVER="${MQTT_SERVER}"
+    MQTT_PORT="1883"
+    MQTT_TOPIC="${MQTT_TOPIC}"
+    MQTT_USERNAME="${MQTT_USERNAME}"
+
+    mosquitto_pub \
+        -h $MQTT_SERVER \
+        -p $MQTT_PORT \
+        -u "$MQTT_USERNAME" \
+        -t "$MQTT_TOPIC" \
+        -m "$1"
+}
+
 pushMQTTData () {
     MQTT_SERVER=`cat /etc/inverter/mqtt.json | jq '.server' -r`
     MQTT_PORT=`cat /etc/inverter/mqtt.json | jq '.port' -r`
@@ -45,6 +59,9 @@ Inverter_mode=`echo $INVERTER_DATA | jq '.Inverter_mode' -r`
  # 1 = Power_On, 2 = Standby, 3 = Line, 4 = Battery, 5 = Fault, 6 = Power_Saving, 7 = Unknown
 
 [ ! -z "$Inverter_mode" ] && pushMQTTData "Inverter_mode" "$Inverter_mode"
+
+valor="$INVERTER_DATA"
+[ ! -z "$valor" ] && pushTest "$valor"
 
 AC_grid_voltage=`echo $INVERTER_DATA | jq '.AC_grid_voltage' -r`
 [ ! -z "$AC_grid_voltage" ] && pushMQTTData "AC_grid_voltage" "$AC_grid_voltage"
