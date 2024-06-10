@@ -60,8 +60,8 @@ Inverter_mode=`echo $INVERTER_DATA | jq '.Inverter_mode' -r`
 
 [ ! -z "$Inverter_mode" ] && pushMQTTData "Inverter_mode" "$Inverter_mode"
 
-valor="$INVERTER_DATA"
-[ ! -z "$valor" ] && pushTest "$valor"
+#valor="$INVERTER_DATA"
+#[ ! -z "$valor" ] && pushTest "$valor"
 
 AC_grid_voltage=`echo $INVERTER_DATA | jq '.AC_grid_voltage' -r`
 [ ! -z "$AC_grid_voltage" ] && pushMQTTData "AC_grid_voltage" "$AC_grid_voltage"
